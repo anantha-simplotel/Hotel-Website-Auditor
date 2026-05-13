@@ -360,3 +360,187 @@ body {
   color: #475467;
   white-space: nowrap;
 }
+
+
+/* Gauge benchmark replacement */
+.gauge-row {
+  display: grid;
+  grid-template-columns: 1fr 240px;
+  gap: 24px;
+  align-items: center;
+  padding: 18px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.gauge-row:last-child {
+  border-bottom: 0;
+}
+
+.gauge-copy h3 {
+  margin: 0 0 6px;
+  color: var(--navy);
+  font-size: 24px;
+}
+
+.gauge-copy p {
+  margin: 0;
+  color: #667085;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.gauge {
+  text-align: center;
+}
+
+.gauge-arc {
+  position: relative;
+  width: 220px;
+  height: 120px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.gauge-fill {
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 270deg,
+    var(--gauge-color) 0deg,
+    var(--gauge-color) calc(var(--score-angle) + 90deg),
+    #e9eef7 calc(var(--score-angle) + 90deg),
+    #e9eef7 180deg,
+    transparent 180deg
+  );
+}
+
+.gauge-mask {
+  position: absolute;
+  left: 28px;
+  top: 28px;
+  width: 164px;
+  height: 164px;
+  background: #fff;
+  border-radius: 50%;
+}
+
+.gauge.poor {
+  --gauge-color: #f77448;
+}
+
+.gauge.warn {
+  --gauge-color: #d97706;
+}
+
+.gauge.good {
+  --gauge-color: #059669;
+}
+
+.gauge.unable {
+  --gauge-color: #94a3b8;
+}
+
+.gauge-needle {
+  position: absolute;
+  left: 109px;
+  top: 109px;
+  width: 2px;
+  height: 96px;
+  background: #101828;
+  transform-origin: bottom center;
+  transform: rotate(var(--benchmark-angle));
+  opacity: 0.85;
+}
+
+.gauge-benchmark {
+  position: absolute;
+  left: 50%;
+  top: 86px;
+  transform: translateX(-50%);
+  font-size: 12px;
+  font-weight: 900;
+  color: #101828;
+  background: #eef4ff;
+  border: 1px solid #dbe4ee;
+  border-radius: 999px;
+  padding: 4px 8px;
+  white-space: nowrap;
+}
+
+.gauge-zero,
+.gauge-hundred {
+  position: absolute;
+  bottom: 0;
+  font-size: 12px;
+  font-weight: 900;
+  color: #667085;
+}
+
+.gauge-zero {
+  left: 4px;
+}
+
+.gauge-hundred {
+  right: 0;
+}
+
+.gauge-score {
+  margin-top: 8px;
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--navy);
+}
+
+/* Fix mobile metric values like 4.9s breaking */
+.metric-line {
+  grid-template-columns: minmax(0, 1fr) auto !important;
+}
+
+.metric-line span {
+  white-space: nowrap !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+  text-align: right;
+  min-width: 72px;
+}
+
+/* Mobile gauge layout */
+@media screen and (max-width: 768px) {
+  .gauge-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .gauge-arc {
+    width: 240px;
+    height: 130px;
+  }
+
+  .gauge-fill {
+    width: 240px;
+    height: 240px;
+  }
+
+  .gauge-mask {
+    left: 30px;
+    top: 30px;
+    width: 180px;
+    height: 180px;
+  }
+
+  .gauge-needle {
+    left: 119px;
+    top: 119px;
+    height: 104px;
+  }
+
+  .metric-line {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+  }
+
+  .metric-line span {
+    white-space: nowrap !important;
+    font-size: 22px !important;
+  }
+}
