@@ -113,7 +113,23 @@ function metricValue(audits, key) {
 
 function categoryScore(categories, key) {
   const score = categories?.[key]?.score;
-  return score != null ? Math.round(score * 100) : null;
+  if (score == null) return null;
+
+  const rawScore = Math.round(score * 100);
+
+  if (key === 'seo') {
+    return Math.max(0, Math.round(rawScore * 0.90));
+  }
+
+  if (key === 'best-practices') {
+    return Math.max(0, Math.round(rawScore * 0.88));
+  }
+
+  if (key === 'accessibility') {
+    return Math.max(0, Math.round(rawScore * 0.90));
+  }
+
+  return rawScore;
 }
 
 function labelForScore(score) {
@@ -125,11 +141,11 @@ function labelForScore(score) {
 
 function calculateDirectBookingReadiness(scores) {
   const items = [
-  { key: 'mobilePerformance', weight: 0.60 },
+  { key: 'mobilePerformance', weight: 0.50 },
   { key: 'desktopPerformance', weight: 0.20 },
-  { key: 'seo', weight: 0.10 },
-  { key: 'bestPractices', weight: 0.05 },
-  { key: 'accessibility', weight: 0.05 }
+  { key: 'seo', weight: 0.15 },
+  { key: 'bestPractices', weight: 0.08 },
+  { key: 'accessibility', weight: 0.07 }
 ];
 
   const allAvailable = items.every((item) => typeof scores[item.key] === 'number');
