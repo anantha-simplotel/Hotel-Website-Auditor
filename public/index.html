@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CHTA Direct Booking Website Audit</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <main class="landing" id="landingView">
+    <section class="hero-panel">
+      <div class="brand-row">
+        <span class="brand-mark">S</span>
+        <span>Simplotel at CHTA</span>
+      </div>
+      <h1>Get your hotel's Direct Booking Readiness Score</h1>
+      <p class="hero-copy">Scan, enter your website, and receive a quick audit that shows where your website may be helping - or hurting - direct bookings.</p>
+      <div class="hero-cards">
+        <div><strong>Speed</strong><span>Mobile loading & LCP</span></div>
+        <div><strong>Visibility</strong><span>SEO readiness signals</span></div>
+        <div><strong>Quality</strong><span>Best practices & accessibility</span></div>
+      </div>
+    </section>
+
+    <section class="form-card">
+      <p class="eyebrow">Free CHTA booth audit</p>
+      <h2>Start your audit</h2>
+      <form id="auditForm">
+        <label>Hotel name</label>
+        <input id="hotelName" name="hotelName" placeholder="e.g., The Soco Hotels" />
+        <label>Website URL <span>*</span></label>
+        <input id="website" name="website" placeholder="e.g., https://www.yourhotel.com" required />
+        <div class="two-col">
+          <div>
+            <label>Your name</label>
+            <input id="prospectName" name="prospectName" placeholder="Optional" />
+          </div>
+          <div>
+            <label>Email</label>
+            <input id="email" name="email" type="email" placeholder="Optional" />
+          </div>
+        </div>
+        <button id="submitBtn" type="submit">Generate my audit</button>
+      </form>
+      <p class="small-note">This takes about 20-40 seconds. If a website blocks testing, some values may show as unable to verify.</p>
+      <p id="statusText" class="status-text"></p>
+    </section>
+  </main>
+
+  <main id="reportView" class="report-shell hidden">
+    <div class="report-actions no-print">
+      <button id="newAuditBtn" class="secondary">New audit</button>
+      <button id="printBtn">Download / Print PDF</button>
+      <a href="/api/leads.csv" class="secondary">Export leads CSV</a>
+    </div>
+    <section id="reportPages"></section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>
