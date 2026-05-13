@@ -353,8 +353,8 @@ app.post('/api/audit', async (req, res) => {
     const errors = [];
 
     const [mobileResult, desktopResult] = await Promise.allSettled([
-  runPageSpeed(url, 'mobile', 1),
-  runPageSpeed(url, 'desktop', 1)
+  runPageSpeed(url, 'mobile', 2),
+runPageSpeed(url, 'desktop', 2)
 ]);
 
 if (mobileResult.status === 'fulfilled') {
