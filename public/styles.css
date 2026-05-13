@@ -638,3 +638,77 @@ body {
 .gauge-score {
   margin-top: 18px !important;
 }
+
+/* FINAL CLEAN GAUGE FIX — no overlap, no broken needle */
+.gauge-row {
+  grid-template-columns: 1fr !important;
+  text-align: left !important;
+}
+
+.gauge {
+  margin-top: 12px !important;
+}
+
+.gauge-arc {
+  width: 260px !important;
+  height: 155px !important;
+  overflow: visible !important;
+  margin: 0 auto 12px !important;
+}
+
+.gauge-fill {
+  width: 260px !important;
+  height: 260px !important;
+}
+
+.gauge-mask {
+  left: 34px !important;
+  top: 34px !important;
+  width: 192px !important;
+  height: 192px !important;
+}
+
+/* Hide the broken benchmark line completely */
+.gauge-needle {
+  display: none !important;
+}
+
+/* Keep target as clean badge inside gauge */
+.gauge-benchmark {
+  top: 82px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 20 !important;
+}
+
+/* Put 0 and 100 below arc ends */
+.gauge-zero,
+.gauge-hundred {
+  bottom: -18px !important;
+  background: #fff !important;
+  padding: 0 8px !important;
+  border-radius: 999px !important;
+  z-index: 20 !important;
+}
+
+.gauge-zero {
+  left: 0 !important;
+}
+
+.gauge-hundred {
+  right: 0 !important;
+}
+
+/* Score below graph, clean and centered */
+.gauge-score {
+  display: block !important;
+  margin-top: 34px !important;
+  font-size: 34px !important;
+  font-weight: 900 !important;
+  line-height: 1.1 !important;
+  text-align: center !important;
+  color: #071b31 !important;
+  transform: none !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
