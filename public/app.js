@@ -58,10 +58,34 @@ function fixHtml(text, idx, compact = false) {
   return `<div class="fix"><div class="num">${idx + 1}</div><p>${escapeHtml(compact ? shorten(text, 110) : text)}</p></div>`;
 }
 
-function barRow(label, score, explanation = '') {
+function benchmarkFor(label) {
+  const text = String(label || '').toLowerCase();
+
+  if (text.includes('mobile')) return 75;
+  if (text.includes('desktop')) return 85;
+  if (text.includes('seo')) return 85;
+  if (text.includes('quality') || text.includes('best')) return 85;
+  if (text.includes('accessibility') || text.includes('ai')) return 85;
+
+  return 85;
+}
+
+function barRow(label, score) {
   const value = score == null ? 0 : score;
   const display = score == null ? 'Unable' : `${score}`;
-  return `<div class="bar-row"><div><div class="bar-label">${escapeHtml(label)}</div>${explanation ? `<div class="bar-help">${escapeHtml(explanation)}</div>` : ''}</div><div class="bar-track"><div class="bar-fill" style="width:${pct(value)}%"></div></div><div class="bar-score">${escapeHtml(display)}</div></div>`;
+  const benchmark = benchmarkFor(label);
+
+  return `
+    <div class="bar-row">
+      <div class="bar-label">${escapeHtml(label)}</div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:${pct(value)}%"></div>
+        <div class="bar-benchmark" style="left:${benchmark}%"></div>
+        <div class="bar-benchmark-label" style="left:${benchmark}%">Target ${benchmark}</div>
+      </div>
+      <div class="bar-score">${escapeHtml(display)}</div>
+    </div>
+  `;
 }
 
 function metricLine(label, value, help = '') {
