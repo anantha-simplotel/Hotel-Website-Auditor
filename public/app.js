@@ -257,7 +257,7 @@ function renderReport(report) {
           <h2 class="section-headline">Mobile improvement opportunities</h2>
           <div class="check-list">${opps.length ? opps.slice(0,5).map(opportunityHtml).join('') : '<div class="check"><b>No major opportunities returned</b><span>Checked</span></div>'}</div>
         </div>
-
+</section>
       ${footerHtml()}
     </article>`;
   $('reportPages').innerHTML = pages;
