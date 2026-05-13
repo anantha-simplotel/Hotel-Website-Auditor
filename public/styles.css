@@ -21,3 +21,22 @@ body{background:#fff}.landing,.report-actions{display:none!important}.report-she
 
 .readiness-scale{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.readiness-scale span{background:#eef4ff;border:1px solid #dbeafe;border-radius:999px;padding:7px 10px;color:#1e3a8a;font-size:12px;font-weight:900}
 @media print{.readiness-scale{gap:1.4mm;margin-top:3mm}.readiness-scale span{font-size:7.8px;padding:3px 5px}.score-context p{font-size:11px;line-height:1.32}.footer-note{font-size:9.5px}}
+.brand-pill{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.brand-logo{
+  width:52px;
+  height:52px;
+  object-fit:contain;
+  display:block;
+}
+
+.brand-pill span{
+  font-size:20px;
+  font-weight:700;
+  color:#fff;
+  line-height:1;
+}
