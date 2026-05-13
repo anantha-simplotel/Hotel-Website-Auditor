@@ -27,8 +27,8 @@ loadEnvFile();
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
-const DATA_DIR = path.join(ROOT_DIR, 'data');
-const LEADS_FILE = path.join(DATA_DIR, 'leads.json');
+const DATA_DIR = null;
+const LEADS_FILE = null;
 
 const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'https://www.simplotel.live,https://hotel-website-auditor.vercel.app')
   .split(',')
@@ -43,9 +43,6 @@ app.use(cors({
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type']
 }));
-
-if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-if (!fs.existsSync(LEADS_FILE)) fs.writeFileSync(LEADS_FILE, '[]', 'utf8');
 
 app.use(express.json({ limit: '1mb' }));
 app.use(express.static(path.join(ROOT_DIR, 'public')));
@@ -98,7 +95,7 @@ function hotelNameMatchesWebsite(hotelName, url) {
 }
 
 function loadLeads() {
-  try { return JSON.parse(fs.readFileSync(LEADS_FILE, 'utf8')); } catch { return []; }
+  return [];
 }
 
 function saveLead(record) {
