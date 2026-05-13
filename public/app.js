@@ -199,7 +199,7 @@ $('auditForm').addEventListener('submit', async (e) => {
   $('submitBtn').textContent = 'Generating audit...';
   $('statusText').textContent = 'Running mobile and desktop website checks. Please wait around 20–60 seconds.';
   try {
-    const res = await fetch('/api/audit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    const res = await fetch('https://hotel-website-auditor.vercel.app/api/audit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Audit failed');
     renderReport(data.report);
@@ -219,4 +219,4 @@ $('newAuditBtn').addEventListener('click', () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-fetch('/api/health').catch(() => null);
+fetch('https://hotel-website-auditor.vercel.app/api/health').catch(() => null);
