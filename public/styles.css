@@ -123,4 +123,136 @@ body{background:#fff}.landing,.report-actions{display:none!important}.report-she
   .footer-logo{height:18px;}
   .score-orb{min-height:50mm;}
   .score-orb .score{font-size:36px;}
+
+  /* Mobile report viewing fix */
+@media screen and (max-width: 768px) {
+  .report-shell {
+    padding: 12px;
+    overflow-x: hidden;
+  }
+
+  .report-actions {
+    max-width: 100%;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .report-actions button,
+  .report-actions a {
+    width: 100%;
+    text-align: center;
+  }
+
+  .page {
+    width: 100%;
+    min-height: auto;
+    padding: 22px 16px 80px;
+    border-radius: 18px;
+    overflow: visible;
+  }
+
+  .report-header,
+  .hero-score,
+  .detail-grid,
+  .cta-strip {
+    grid-template-columns: 1fr !important;
+    flex-direction: column;
+  }
+
+  .metric-grid,
+  .fix-grid,
+  .hero-cards {
+    grid-template-columns: 1fr !important;
+  }
+
+  .score-orb {
+    width: 100%;
+    display: flex;
+    min-height: 190px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .score-orb .score {
+    font-size: 64px;
+  }
+
+  .readiness-scale {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .bar-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .bar-score {
+    text-align: left;
+  }
+
+  .metric-line {
+    grid-template-columns: 1fr;
+  }
+
+  .check {
+    flex-direction: column;
+  }
+
+  .footer-note {
+    position: static;
+    margin-top: 28px;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+/* Print/PDF overlap fix */
+@media print {
+  body {
+    background: #fff !important;
+  }
+
+  .no-print,
+  .report-actions {
+    display: none !important;
+  }
+
+  .report-shell {
+    padding: 0 !important;
+    background: #fff !important;
+  }
+
+  .page {
+    width: 100% !important;
+    min-height: auto !important;
+    margin: 0 !important;
+    padding: 28px !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    page-break-after: always;
+    break-after: page;
+    overflow: visible !important;
+  }
+
+  .section-card,
+  .hero-score,
+  .detail-grid,
+  .metric-grid,
+  .fix-grid,
+  .issue,
+  .metric-line,
+  .check {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .footer-note {
+    position: static !important;
+    margin-top: 24px !important;
+  }
+}
 }
