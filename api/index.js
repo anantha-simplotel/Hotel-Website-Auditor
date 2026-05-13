@@ -30,19 +30,7 @@ const PORT = Number(process.env.PORT || 3000);
 const DATA_DIR = null;
 const LEADS_FILE = null;
 
-const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'https://www.simplotel.live,https://hotel-website-auditor.vercel.app')
-  .split(',')
-  .map((origin) => origin.trim())
-  .filter(Boolean);
-
-app.use(cors({
-  origin(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
-    return callback(null, false);
-  },
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type']
-}));
+app.use(cors())
 
 app.use(express.json({ limit: '1mb' }));
 app.use(express.static(path.join(ROOT_DIR, 'public')));
