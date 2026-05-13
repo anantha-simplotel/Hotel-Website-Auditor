@@ -1,7 +1,7 @@
 {
   "name": "chta-booth-direct-booking-audit-app",
-  "version": "2.1.0",
-  "description": "Hotel website audit app for direct booking readiness reports.",
+  "version": "2.0.0",
+  "description": "CHTA booth QR website audit app for hotel direct booking readiness reports.",
   "main": "api/index.js",
   "scripts": {
     "start": "node api/index.js",
