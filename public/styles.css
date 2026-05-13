@@ -544,3 +544,13 @@ body {
     font-size: 22px !important;
   }
 }
+
+
+/* Home loading bar: Simplotel orange */
+.progress-fill,
+.loading-fill,
+.audit-progress-fill,
+.progress-bar-fill {
+  background: #E8491A !important;
+  background-image: none !important;
+}
