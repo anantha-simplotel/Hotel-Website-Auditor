@@ -109,7 +109,7 @@ function escapeCsv(value) {
   return text;
 }
 
-async function fetchWithTimeout(url, opts = {}, timeoutMs = 70000) {
+async function fetchWithTimeout(url, opts = {}, timeoutMs = 45000) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
@@ -223,7 +223,7 @@ async function runPageSpeedOnce(url, strategy = 'mobile') {
   if (apiKey) params.set('key', apiKey);
 
   const endpoint = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?${params.toString()}`;
-  const res = await fetchWithTimeout(endpoint, {}, 70000);
+  const res = await fetchWithTimeout(endpoint, {}, 45000);
   if (!res.ok) {
     const body = await res.text().catch(() => '');
     throw new Error(`${strategy === 'mobile' ? 'Mobile' : 'Desktop'} check failed (${res.status}). ${body.slice(0, 220)}`);
@@ -352,8 +352,22 @@ app.post('/api/audit', async (req, res) => {
     let desktop = null;
     const errors = [];
 
-    try { mobile = await runPageSpeed(url, 'mobile', 2); } catch (err) { errors.push(shortError(err)); }
-    try { desktop = await runPageSpeed(url, 'desktop', 2); } catch (err) { errors.push(shortError(err)); }
+    const [mobileResult, desktopResult] = await Promise.allSettled([
+  runPageSpeed(url, 'mobile', 1),
+  runPageSpeed(url, 'desktop', 1)
+]);
+
+if (mobileResult.status === 'fulfilled') {
+  mobile = mobileResult.value;
+} else {
+  errors.push(shortError(mobileResult.reason));
+}
+
+if (desktopResult.status === 'fulfilled') {
+  desktop = desktopResult.value;
+} else {
+  errors.push(shortError(desktopResult.reason));
+}
 
     const categoryScores = {
       mobilePerformance: mobile?.categories?.performance ?? null,
