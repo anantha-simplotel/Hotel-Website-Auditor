@@ -59,15 +59,7 @@ function fixHtml(text, idx, compact = false) {
 }
 
 function benchmarkFor(label) {
-  const text = String(label || '').toLowerCase();
-
-  if (text.includes('mobile')) return 75;
-  if (text.includes('desktop')) return 85;
-  if (text.includes('seo')) return 85;
-  if (text.includes('quality') || text.includes('best')) return 85;
-  if (text.includes('accessibility') || text.includes('ai')) return 85;
-
-  return 85;
+  return 90;
 }
 
 function categoryExplain(label) {
