@@ -74,9 +74,7 @@ function loadLeads() {
 }
 
 function saveLead(record) {
-  const leads = loadLeads();
-  leads.push(record);
-  fs.writeFileSync(LEADS_FILE, JSON.stringify(leads, null, 2));
+  console.log('Lead captured:', record);
 }
 
 function escapeCsv(value) {
