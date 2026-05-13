@@ -554,3 +554,85 @@ body {
   background: #E8491A !important;
   background-image: none !important;
 }
+
+/* Final gauge label spacing fix */
+.gauge-arc {
+  height: 145px !important;
+  overflow: visible !important;
+  margin-bottom: 18px !important;
+}
+
+.gauge-zero,
+.gauge-hundred {
+  bottom: -18px !important;
+  background: #fff;
+  padding: 0 4px;
+  border-radius: 6px;
+}
+
+.gauge-zero {
+  left: 0 !important;
+}
+
+.gauge-hundred {
+  right: -4px !important;
+}
+
+.gauge-score {
+  margin-top: 22px !important;
+}
+
+/* Home loading bar: softer progress gradient */
+#progressFill,
+.progress-fill,
+.loading-fill,
+.audit-progress-fill,
+.progress-bar-fill {
+  background: linear-gradient(90deg, #f7a16f 0%, #f3c35b 55%, #1f9d72 100%) !important;
+  background-image: linear-gradient(90deg, #f7a16f 0%, #f3c35b 55%, #1f9d72 100%) !important;
+}
+
+/* Benchmark marker: place it on the gauge arc, not floating in center */
+.gauge-benchmark {
+  top: 18px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  background: #eef4ff !important;
+  border: 1px solid #dbe4ee !important;
+  color: #101828 !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  padding: 4px 9px !important;
+  border-radius: 999px !important;
+}
+
+/* Benchmark line should clearly mark the target */
+.gauge-needle {
+  width: 3px !important;
+  background: #101828 !important;
+  opacity: 0.95 !important;
+  z-index: 5 !important;
+}
+
+/* Prevent 0 and 100 from touching the gauge */
+.gauge-zero,
+.gauge-hundred {
+  bottom: -22px !important;
+  background: #fff !important;
+  padding: 0 6px !important;
+  border-radius: 6px !important;
+  z-index: 6 !important;
+}
+
+.gauge-zero {
+  left: -6px !important;
+}
+
+.gauge-hundred {
+  right: -10px !important;
+}
+
+/* Give score enough breathing room below the gauge */
+.gauge-score {
+  margin-top: 30px !important;
+}
