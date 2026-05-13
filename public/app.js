@@ -70,20 +70,49 @@ function benchmarkFor(label) {
   return 85;
 }
 
+function benchmarkFor(label) {
+  const text = String(label || '').toLowerCase();
+  if (text.includes('mobile')) return 75;
+  if (text.includes('desktop')) return 85;
+  if (text.includes('seo')) return 85;
+  if (text.includes('quality') || text.includes('best')) return 85;
+  if (text.includes('accessibility') || text.includes('ai')) return 85;
+  return 85;
+}
+
+function scoreStatus(score, benchmark) {
+  if (score == null) return 'unable';
+  if (score >= benchmark) return 'good';
+  if (score >= benchmark - 20) return 'warn';
+  return 'poor';
+}
+
 function barRow(label, score) {
-  const value = score == null ? 0 : score;
-  const display = score == null ? 'Unable' : `${score}`;
+  const value = score == null ? 0 : Math.max(0, Math.min(100, Number(score)));
   const benchmark = benchmarkFor(label);
+  const status = scoreStatus(score, benchmark);
+
+  const scoreAngle = -90 + (value * 1.8);
+  const benchmarkAngle = -90 + (benchmark * 1.8);
 
   return `
-    <div class="bar-row">
-      <div class="bar-label">${escapeHtml(label)}</div>
-      <div class="bar-track">
-        <div class="bar-fill" style="width:${pct(value)}%"></div>
-        <div class="bar-benchmark" style="left:${benchmark}%"></div>
-        <div class="bar-benchmark-label" style="left:${benchmark}%">Target ${benchmark}</div>
+    <div class="gauge-row">
+      <div class="gauge-copy">
+        <h3>${escapeHtml(label)}</h3>
+        <p>${escapeHtml(categoryExplain(label))}</p>
       </div>
-      <div class="bar-score">${escapeHtml(display)}</div>
+
+      <div class="gauge ${status}">
+        <div class="gauge-arc">
+          <div class="gauge-fill" style="--score-angle:${scoreAngle}deg"></div>
+          <div class="gauge-mask"></div>
+          <div class="gauge-needle" style="--benchmark-angle:${benchmarkAngle}deg"></div>
+          <div class="gauge-benchmark" style="--benchmark-angle:${benchmarkAngle}deg">Target ${benchmark}</div>
+          <div class="gauge-zero">0</div>
+          <div class="gauge-hundred">100</div>
+        </div>
+        <div class="gauge-score">${score == null ? 'Unable' : `${value}/100`}</div>
+      </div>
     </div>
   `;
 }
@@ -213,16 +242,6 @@ function renderReport(report) {
           <h2 class="section-headline">Mobile improvement opportunities</h2>
           <div class="check-list">${opps.length ? opps.slice(0,5).map(opportunityHtml).join('') : '<div class="check"><b>No major opportunities returned</b><span>Checked</span></div>'}</div>
         </div>
-        <div class="section-card compact-section">
-          <h2 class="section-headline">Run details</h2>
-          <div class="metric-table">
-            ${metricLine('Mobile final URL', mobile?.finalUrl || report.website, 'The final URL tested after redirects.')}
-            ${metricLine('Desktop final URL', desktop?.finalUrl || report.website, 'The final URL tested after redirects.')}
-            ${metricLine('Mobile test time', mobile?.fetchTime || 'Unable to verify', 'When the mobile check ran.')}
-            ${metricLine('Desktop test time', desktop?.fetchTime || 'Unable to verify', 'When the desktop check ran.')}
-          </div>
-        </div>
-      </section>
 
       ${footerHtml()}
     </article>`;
