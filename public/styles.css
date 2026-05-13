@@ -604,3 +604,37 @@ body {
 .gauge-score {
   margin-top: 30px !important;
 }
+
+.gauge-arc {
+  height: 170px !important;
+  overflow: visible !important;
+  margin-bottom: 18px !important;
+}
+
+.gauge-benchmark {
+  top: 70px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 10 !important;
+}
+
+.gauge-zero,
+.gauge-hundred {
+  bottom: 4px !important;
+  background: #fff !important;
+  padding: 0 8px !important;
+  border-radius: 999px !important;
+  z-index: 10 !important;
+}
+
+.gauge-zero {
+  left: -4px !important;
+}
+
+.gauge-hundred {
+  right: -12px !important;
+}
+
+.gauge-score {
+  margin-top: 18px !important;
+}
