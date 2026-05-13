@@ -125,12 +125,12 @@ function labelForScore(score) {
 
 function calculateDirectBookingReadiness(scores) {
   const items = [
-    { key: 'mobilePerformance', weight: 0.35 },
-    { key: 'desktopPerformance', weight: 0.15 },
-    { key: 'seo', weight: 0.20 },
-    { key: 'bestPractices', weight: 0.15 },
-    { key: 'accessibility', weight: 0.15 }
-  ];
+  { key: 'mobilePerformance', weight: 0.60 },
+  { key: 'desktopPerformance', weight: 0.20 },
+  { key: 'seo', weight: 0.10 },
+  { key: 'bestPractices', weight: 0.05 },
+  { key: 'accessibility', weight: 0.05 }
+];
 
   const allAvailable = items.every((item) => typeof scores[item.key] === 'number');
   if (!allAvailable) return null;
@@ -453,7 +453,7 @@ app.post('/api/audit', async (req, res) => {
         label: readinessLabel(directBookingReadiness),
         description: readinessDescription(directBookingReadiness),
         formula:
-          'Weighted from Mobile Performance, Desktop Performance, SEO, Best Practices, and Accessibility.'
+  'Weighted mainly from Mobile Performance and Desktop Performance, with lighter support from Technical SEO, Site Quality, and Usability.'
       },
       exactCategoryScores: categoryScores,
       metrics: {
