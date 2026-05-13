@@ -546,41 +546,9 @@ body {
 }
 
 
-/* Home loading bar: Simplotel orange */
-.progress-fill,
-.loading-fill,
-.audit-progress-fill,
-.progress-bar-fill {
-  background: #E8491A !important;
-  background-image: none !important;
-}
 
-/* Final gauge label spacing fix */
-.gauge-arc {
-  height: 145px !important;
-  overflow: visible !important;
-  margin-bottom: 18px !important;
-}
 
-.gauge-zero,
-.gauge-hundred {
-  bottom: -18px !important;
-  background: #fff;
-  padding: 0 4px;
-  border-radius: 6px;
-}
 
-.gauge-zero {
-  left: 0 !important;
-}
-
-.gauge-hundred {
-  right: -4px !important;
-}
-
-.gauge-score {
-  margin-top: 22px !important;
-}
 
 /* Home loading bar: softer progress gradient */
 #progressFill,
