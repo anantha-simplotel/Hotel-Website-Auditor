@@ -1,12 +1,21 @@
 const $ = (id) => document.getElementById(id);
 let currentReport = null;
+let tipTimer = null;
+let progressTimer = null;
+let progressValue = 0;
 
-function scoreClass(score) {
-  if (score == null) return 'medium';
-  if (score >= 90) return 'low';
-  if (score >= 50) return 'medium';
-  return 'high';
-}
+const API_BASE = 'https://hotel-website-auditor.vercel.app';
+
+const loadingTips = [
+  'Direct booking tip: your booking button should be easier to find than the nearest beach bar.',
+  'OTA-proofing in progress: fewer clicks, clearer prices, stronger reasons to book direct.',
+  'Speed check running: guests do not wait politely. They bounce.',
+  'Direct booking wisdom: if guests have to hunt for your best rate, OTAs just won a round.',
+  'Good hotel websites answer three questions fast: why stay, why direct, why now.',
+  'Checking friction: every extra step is a tiny invitation to compare elsewhere.',
+  'Tiny fix, big impact: make the direct-booking value visible before the guest scrolls.',
+  'Almost there: we are checking whether your website helps the booking or slows the guest down.'
+];
 
 function scoreText(score) {
   return score == null ? 'Unable' : `${score}`;
@@ -49,19 +58,34 @@ function fixHtml(text, idx, compact = false) {
   return `<div class="fix"><div class="num">${idx + 1}</div><p>${escapeHtml(compact ? shorten(text, 110) : text)}</p></div>`;
 }
 
-function barRow(label, score) {
+function barRow(label, score, explanation = '') {
   const value = score == null ? 0 : score;
   const display = score == null ? 'Unable' : `${score}`;
-  return `<div class="bar-row"><div class="bar-label">${escapeHtml(label)}</div><div class="bar-track"><div class="bar-fill" style="width:${pct(value)}%"></div></div><div class="bar-score">${escapeHtml(display)}</div></div>`;
+  return `<div class="bar-row"><div><div class="bar-label">${escapeHtml(label)}</div>${explanation ? `<div class="bar-help">${escapeHtml(explanation)}</div>` : ''}</div><div class="bar-track"><div class="bar-fill" style="width:${pct(value)}%"></div></div><div class="bar-score">${escapeHtml(display)}</div></div>`;
 }
 
-function metricLine(label, value) {
-  return `<div class="metric-line"><b>${escapeHtml(label)}</b><span>${escapeHtml(value || 'Unable to verify')}</span></div>`;
+function metricLine(label, value, help = '') {
+  return `<div class="metric-line"><b>${escapeHtml(label)}${help ? `<small>${escapeHtml(help)}</small>` : ''}</b><span>${escapeHtml(value || 'Unable to verify')}</span></div>`;
 }
 
 function opportunityHtml(item) {
   const value = item.displayValue ? ` — ${item.displayValue}` : '';
-  return `<div class="check"><b>${escapeHtml(item.title)}</b><span>${escapeHtml(value || 'Flagged')}</span></div>`;
+  const titleMap = {
+    'uses-responsive-images': 'Serve right-sized images',
+    'offscreen-images': 'Delay hidden images',
+    'render-blocking-resources': 'Remove loading blockers',
+    'unused-javascript': 'Reduce unused JavaScript',
+    'unused-css-rules': 'Reduce unused CSS',
+    'server-response-time': 'Improve server response time',
+    'modern-image-formats': 'Use modern image formats',
+    'uses-optimized-images': 'Compress heavy images'
+  };
+  const friendlyTitle = titleMap[item.id] || item.title;
+  return `<div class="check"><b>${escapeHtml(friendlyTitle)}</b><span>${escapeHtml(value || 'Flagged')}</span></div>`;
+}
+
+function footerHtml() {
+  return `<div class="footer-note"><span><img src="/simplotel-logo.png" alt="Simplotel" class="footer-logo"></span><span>Audited by Simplotel</span></div>`;
 }
 
 function renderReport(report) {
@@ -72,14 +96,13 @@ function renderReport(report) {
   const issues = report.issues || [];
   const fixes = report.quickFixes || [];
   const opps = report.opportunities || [];
-  const errors = report.errors || [];
   const mobile = report.pageSpeed?.mobile || null;
   const desktop = report.pageSpeed?.desktop || null;
   const pages = `
     <article class="page">
       <header class="report-header">
         <div>
-          <div class="report-kicker">CHTA Direct Booking Website Audit</div>
+          <div class="report-kicker">Direct Booking Website Audit</div>
           <h1 class="report-title">${escapeHtml(report.hotelName)}</h1>
           <div class="report-url">${escapeHtml(report.website)}</div>
         </div>
@@ -89,7 +112,7 @@ function renderReport(report) {
       <section class="hero-score">
         <div class="score-orb">
           <div class="score">${scoreText(scores.directBookingReadiness)}</div>
-          <div class="label">Direct Booking Readiness</div>
+          <div class="label">Direct Booking<br>Readiness</div>
         </div>
         <div class="score-context">
           <h3>${escapeHtml(report.readiness?.label || labels.directBookingReadiness || 'Direct booking readiness')}</h3>
@@ -108,8 +131,8 @@ function renderReport(report) {
         ${cardMetric('Mobile Performance', scores.mobilePerformance, labels.mobilePerformance)}
         ${cardMetric('Desktop Performance', scores.desktopPerformance, labels.desktopPerformance)}
         ${cardMetric('SEO', scores.seo, labels.seo)}
-        ${cardMetric('Best Practices', scores.bestPractices, labels.bestPractices)}
-        ${cardMetric('Accessibility', scores.accessibility, labels.accessibility)}
+        ${cardMetric('Site Quality', scores.bestPractices, labels.bestPractices)}
+        ${cardMetric('AI & Accessibility', scores.accessibility, labels.accessibility)}
       </section>
 
       <section class="section-card tint">
@@ -122,10 +145,10 @@ function renderReport(report) {
         <div class="fix-grid">${fixes.slice(0,3).map((item, idx) => fixHtml(item, idx, true)).join('')}</div>
       </section>
 
-      <div class="footer-note"><span>Audited by Simplotel</span><span>Powered by Simplotel</span></div>
+      ${footerHtml()}
     </article>
 
-    <article class="page">
+    <article class="page page-2">
       <header class="report-header">
         <div>
           <div class="report-kicker">Detailed breakdown</div>
@@ -135,51 +158,49 @@ function renderReport(report) {
         <div class="date-pill">Page 2</div>
       </header>
 
-      <section class="section-card">
+      <section class="section-card compact-section">
         <h2 class="section-headline">Category score benchmarks</h2>
-        ${barRow('Mobile Performance', scores.mobilePerformance)}
-        ${barRow('Desktop Performance', scores.desktopPerformance)}
-        ${barRow('SEO', scores.seo)}
-        ${barRow('Best Practices', scores.bestPractices)}
-        ${barRow('Accessibility', scores.accessibility)}
+        ${barRow('Mobile Performance', scores.mobilePerformance, 'How well the website loads and responds on phones.')}
+        ${barRow('Desktop Performance', scores.desktopPerformance, 'How well the website loads and responds on desktop.')}
+        ${barRow('SEO', scores.seo, 'Technical search-readiness signals checked by Lighthouse.')}
+        ${barRow('Site Quality', scores.bestPractices, 'Security, browser compatibility, and quality signals.')}
+        ${barRow('AI & Accessibility', scores.accessibility, 'Clear, accessible structure that helps guests and machine understanding.')}
       </section>
 
-      <section class="detail-grid">
-        <div class="section-card">
+      <section class="detail-grid print-keep">
+        <div class="section-card compact-section">
           <h2 class="section-headline">Mobile speed metrics</h2>
           <div class="metric-table">
-            ${metricLine('LCP - main content load', metrics.lcp?.display)}
-            ${metricLine('FCP - first visible content', metrics.fcp?.display)}
-            ${metricLine('Speed Index', metrics.speedIndex?.display)}
-            ${metricLine('Total Blocking Time', metrics.tbt?.display)}
-            ${metricLine('CLS - layout stability', metrics.cls?.display)}
+            ${metricLine('LCP', metrics.lcp?.display, 'How fast the main hero/booking content appears.')}
+            ${metricLine('FCP', metrics.fcp?.display, 'How fast the first visible content appears.')}
+            ${metricLine('Speed Index', metrics.speedIndex?.display, 'How quickly the visible page feels loaded.')}
+            ${metricLine('Blocking Time', metrics.tbt?.display, 'Delay caused by heavy scripts before the page responds.')}
+            ${metricLine('Layout Stability', metrics.cls?.display, 'Whether content jumps while loading.')}
           </div>
         </div>
-        <div class="section-card">
+        <div class="section-card compact-section">
           <h2 class="section-headline">Why LCP matters</h2>
-          <p class="explain">LCP shows when the main visible content is ready for the visitor. For a hotel website, this is often the hero image, headline, or booking area. A slow LCP can make guests wait before they even begin deciding or booking.</p>
+          <p class="explain">LCP shows when the main visible content is ready for the visitor. For a hotel website, this is often the hero image, headline, offer, or booking area. A slow LCP can make guests wait before they even begin deciding or booking.</p>
         </div>
       </section>
 
-      <section class="detail-grid">
-        <div class="section-card">
+      <section class="detail-grid print-keep">
+        <div class="section-card compact-section">
           <h2 class="section-headline">Mobile improvement opportunities</h2>
           <div class="check-list">${opps.length ? opps.slice(0,5).map(opportunityHtml).join('') : '<div class="check"><b>No major opportunities returned</b><span>Checked</span></div>'}</div>
         </div>
-        <div class="section-card">
+        <div class="section-card compact-section">
           <h2 class="section-headline">Run details</h2>
           <div class="metric-table">
-            ${metricLine('Mobile final URL', mobile?.finalUrl || report.website)}
-            ${metricLine('Desktop final URL', desktop?.finalUrl || report.website)}
-            ${metricLine('Mobile fetch time', mobile?.fetchTime || 'Unable to verify')}
-            ${metricLine('Desktop fetch time', desktop?.fetchTime || 'Unable to verify')}
+            ${metricLine('Mobile final URL', mobile?.finalUrl || report.website, 'The final URL tested after redirects.')}
+            ${metricLine('Desktop final URL', desktop?.finalUrl || report.website, 'The final URL tested after redirects.')}
+            ${metricLine('Mobile test time', mobile?.fetchTime || 'Unable to verify', 'When the mobile check ran.')}
+            ${metricLine('Desktop test time', desktop?.fetchTime || 'Unable to verify', 'When the desktop check ran.')}
           </div>
         </div>
       </section>
 
-      ${errors.length ? `<section class="section-card error-note"><h2 class="section-headline">Audit notes</h2><p class="explain">${escapeHtml(errors.join(' | '))}</p></section>` : ''}
-
-      <div class="footer-note"><span>CHTA Direct Booking Audit</span><span>Powered by Simplotel</span></div>
+      ${footerHtml()}
     </article>`;
   $('reportPages').innerHTML = pages;
   $('landingView').classList.add('hidden');
@@ -187,23 +208,100 @@ function renderReport(report) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+function cleanToken(value) {
+  return String(value || '')
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/&/g, ' and ')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+}
+
+function looseHotelWebsiteMatch(hotelName, website) {
+  let host = '';
+  try {
+    const url = new URL(/^https?:\/\//i.test(website) ? website : `https://${website}`);
+    host = url.hostname.replace(/^www\./i, '').toLowerCase();
+  } catch {
+    return false;
+  }
+  const compactHost = cleanToken(host.replace(/\.[a-z.]+$/i, '')).replace(/\s+/g, '');
+  const ignored = new Set(['the', 'hotel', 'hotels', 'resort', 'resorts', 'villa', 'villas', 'beach', 'spa', 'and', 'by', 'at', 'inn', 'suites', 'suite', 'official']);
+  const tokens = cleanToken(hotelName).split(/\s+/).filter(token => token.length >= 3 && !ignored.has(token));
+  if (!tokens.length) return true;
+  return tokens.some(token => compactHost.includes(token)) || compactHost.includes(tokens.join(''));
+}
+
+function startLoading() {
+  clearInterval(tipTimer);
+  clearInterval(progressTimer);
+  progressValue = 0;
+  $('loadingPanel').classList.remove('hidden');
+  $('statusText').textContent = '';
+  $('tipText').textContent = loadingTips[0];
+  $('progressFill').style.width = '0%';
+  $('progressText').textContent = '0%';
+
+  let tipIndex = 0;
+  tipTimer = setInterval(() => {
+    tipIndex = (tipIndex + 1) % loadingTips.length;
+    $('tipText').textContent = loadingTips[tipIndex];
+  }, 3500);
+
+  progressTimer = setInterval(() => {
+    const increment = progressValue < 70 ? 7 : progressValue < 88 ? 3 : 1;
+    progressValue = Math.min(94, progressValue + increment);
+    $('progressFill').style.width = `${progressValue}%`;
+    $('progressText').textContent = progressValue >= 90 ? `${progressValue}% · almost there` : `${progressValue}%`;
+  }, 1200);
+}
+
+function stopLoading(done = false) {
+  clearInterval(tipTimer);
+  clearInterval(progressTimer);
+  if (done) {
+    $('progressFill').style.width = '100%';
+    $('progressText').textContent = '100% · audit ready';
+  }
+}
+
+function resetToHome() {
+  $('reportView').classList.add('hidden');
+  $('landingView').classList.remove('hidden');
+  $('statusText').textContent = '';
+  $('loadingPanel').classList.add('hidden');
+  $('auditForm').reset();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 $('auditForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const payload = {
-    hotelName: $('hotelName').value,
-    website: $('website').value,
-    prospectName: $('prospectName').value,
-    email: $('email').value
-  };
+  const hotelName = $('hotelName').value.trim();
+  const website = $('website').value.trim();
+
+  if (!looseHotelWebsiteMatch(hotelName, website)) {
+    $('statusText').textContent = 'The hotel name and website URL do not seem to match. Please check the official website before running the audit.';
+    return;
+  }
+
+  const payload = { hotelName, website };
   $('submitBtn').disabled = true;
-  $('submitBtn').textContent = 'Generating audit...';
-  $('statusText').textContent = 'Running mobile and desktop website checks. Please wait around 20–60 seconds.';
+  $('submitBtn').textContent = 'Auditing your website...';
+  startLoading();
+
   try {
-    const res = await fetch('https://hotel-website-auditor.vercel.app/api/audit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    const res = await fetch(`${API_BASE}/api/audit`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Audit failed');
-    renderReport(data.report);
+    stopLoading(true);
+    setTimeout(() => renderReport(data.report), 350);
   } catch (err) {
+    stopLoading(false);
     $('statusText').textContent = err.message;
   } finally {
     $('submitBtn').disabled = false;
@@ -212,11 +310,7 @@ $('auditForm').addEventListener('submit', async (e) => {
 });
 
 $('printBtn').addEventListener('click', () => window.print());
-$('newAuditBtn').addEventListener('click', () => {
-  $('reportView').classList.add('hidden');
-  $('landingView').classList.remove('hidden');
-  $('statusText').textContent = '';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-});
+$('newAuditBtn').addEventListener('click', resetToHome);
+$('homeBtn').addEventListener('click', resetToHome);
 
-fetch('https://hotel-website-auditor.vercel.app/api/health').catch(() => null);
+fetch(`${API_BASE}/api/health`).catch(() => null);

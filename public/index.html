@@ -3,56 +3,52 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CHTA Direct Booking Website Audit</title>
+  <title>Simplotel Hotel Website Auditor</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
   <link rel="stylesheet" href="/styles.css" />
-  <link href="https://assets.simplotel.com/simplotel/image/upload/x_0,y_0,w_250,h_250,c_crop/w_32,h_32,c_scale/simplotel-technologies-pvt-ltd/Favicon_a1nb5n" rel="shortcut icon">
 </head>
 <body>
   <main class="landing" id="landingView">
     <section class="hero-panel">
       <div class="brand-pill">
-  <img src="/simplotel-logo.png" alt="Simplotel" class="brand-logo">
-  <span>Simplotel Hotel Website Auditor</span>
-</div>
+        <img src="/simplotel-logo.png" alt="Simplotel" class="brand-logo" />
+        <span>Simplotel Hotel Website Auditor</span>
+      </div>
       <h1>Get your hotel's Direct Booking Readiness Score</h1>
-      <p class="hero-copy">Scan, enter your website, and receive a quick audit that shows where your website may be helping - or hurting - direct bookings.</p>
+      <p class="hero-copy">See how ready your website is to turn high-intent guests into direct bookings before they drift back to OTAs.</p>
       <div class="hero-cards">
         <div><strong>Speed</strong><span>Mobile loading & LCP</span></div>
         <div><strong>Visibility</strong><span>SEO readiness signals</span></div>
-        <div><strong>Quality</strong><span>Best practices & accessibility</span></div>
+        <div><strong>Quality</strong><span>Best practices & AI accessibility</span></div>
       </div>
     </section>
 
     <section class="form-card">
-      <p class="eyebrow">Free CHTA booth audit</p>
       <h2>Start your audit</h2>
       <form id="auditForm">
         <label>Hotel name</label>
-        <input id="hotelName" name="hotelName" placeholder="e.g., The Soco Hotels" />
+        <input id="hotelName" name="hotelName" placeholder="e.g., The Soco Hotels" required />
         <label>Website URL <span>*</span></label>
         <input id="website" name="website" placeholder="e.g., https://www.yourhotel.com" required />
-        <div class="two-col">
-          <div>
-            <label>Your name</label>
-            <input id="prospectName" name="prospectName" placeholder="Optional" />
-          </div>
-          <div>
-            <label>Email</label>
-            <input id="email" name="email" type="email" placeholder="Optional" />
-          </div>
-        </div>
         <button id="submitBtn" type="submit">Generate my audit</button>
       </form>
-      <p class="small-note">This takes about 20-40 seconds. If a website blocks testing, some values may show as unable to verify.</p>
+      <p class="small-note">This takes about 20–60 seconds. We check mobile performance, desktop performance, SEO, site quality, and AI accessibility signals.</p>
+      <div id="loadingPanel" class="loading-panel hidden">
+        <div class="progress-row">
+          <div class="progress-track"><div id="progressFill" class="progress-fill"></div></div>
+          <strong id="progressText">0%</strong>
+        </div>
+        <p id="tipText" class="tip-text"></p>
+      </div>
       <p id="statusText" class="status-text"></p>
     </section>
   </main>
 
   <main id="reportView" class="report-shell hidden">
     <div class="report-actions no-print">
+      <button id="homeBtn" class="secondary">Home</button>
       <button id="newAuditBtn" class="secondary">New audit</button>
       <button id="printBtn">Download / Print PDF</button>
-      <a href="/api/leads.csv" class="secondary">Export leads CSV</a>
     </div>
     <section id="reportPages"></section>
   </main>
