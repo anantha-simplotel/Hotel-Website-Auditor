@@ -70,16 +70,31 @@ function benchmarkFor(label) {
   return 85;
 }
 
-function benchmarkFor(label) {
+function categoryExplain(label) {
   const text = String(label || '').toLowerCase();
-  if (text.includes('mobile')) return 75;
-  if (text.includes('desktop')) return 85;
-  if (text.includes('seo')) return 85;
-  if (text.includes('quality') || text.includes('best')) return 85;
-  if (text.includes('accessibility') || text.includes('ai')) return 85;
-  return 85;
-}
 
+  if (text.includes('mobile')) {
+    return 'How quickly and smoothly the website performs on phones.';
+  }
+
+  if (text.includes('desktop')) {
+    return 'Desktop loading and interaction experience.';
+  }
+
+  if (text.includes('seo')) {
+    return 'Technical search visibility and indexing readiness.';
+  }
+
+  if (text.includes('quality') || text.includes('best')) {
+    return 'Security, browser compatibility, and site reliability.';
+  }
+
+  if (text.includes('accessibility') || text.includes('ai')) {
+    return 'How clearly the website structure can be understood by guests and machines.';
+  }
+
+  return 'Website quality benchmark.';
+}
 function scoreStatus(score, benchmark) {
   if (score == null) return 'unable';
   if (score >= benchmark) return 'good';
